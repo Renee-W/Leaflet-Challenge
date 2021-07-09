@@ -1,3 +1,24 @@
+// Define a markerSize function that will give each city a different marker radius based on earthquake magnitude
+function markerSize(magnitude) {
+    return magnitude * 5;
+}
+
+// Define a color function that sets the colour of a marker based on earthquake magnitude
+function magColor(magnitude) {
+    if (magnitude <= 1) {
+        return "green"
+    } else if (magnitude <= 2) {
+        return "yellowgreen"
+    } else if (magnitude <= 3) {
+        return "yellow"
+    } else if (magnitude <= 4) {
+        return "orange"
+    } else if (magnitude <= 5) {
+        return "red"
+    } else {
+        return "blue"
+    }
+};
 //USGS url
 var url="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
@@ -37,7 +58,11 @@ function createMap(earthquakes) {
     }).addTo(myMap)
     //binding each layer
     function onEachFeature(feature,layer){
-        
-    }
+        var format = d3.timeFormat("%d-%b-%Y at %H:%M");
+
+        layer.bindPopup(`<strong>Place: </strong> ${feature.properties.place}<br><strong>Time: </strong>${format(new Date(feature.properties.time))}<br><strong>Magnitude: </strong>${feature.properties.mag}`);
+    };
+    //set up legend
+    //add legend to map
 };
 
