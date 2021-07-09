@@ -22,24 +22,48 @@ function magColor(magnitude) {
 //USGS url
 var url="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
+// boundry url
+var boundurl = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
+
 //define the create map function
 function createMap(earthquakes) {
-    
-    // Creating map object
-    var myMap = L.map("mapid", {
-        center: [37.7749, -122.4194],
-        zoom: 7
-    });
-    
-    // Create the tile layer that will be the background of our map
-    L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+    var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
     attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
     tileSize: 512,
     maxZoom: 18,
     zoomOffset: -1,
     id: "mapbox/light-v10",
     accessToken: API_KEY
-    }).addTo(myMap);
+    })
+    
+    // Creating map object
+    var myMap = L.map("mapid", {
+        center: [37.7749, -122.4194],
+        zoom: 3,
+        layers: [lightmap]
+    });
+    var tectoniclayer = new L.LayerGroup()
+    var earthquakelayer = new L.LayerGroup()
+
+    var datalayer = {
+        'Tectonic Plates':tectoniclayer,
+        'Earthquakes':earthquakelayer
+    }
+    var allmaps = {
+        'light': lightmap
+    }
+    L.control.layers (allmaps, datalayer).addTo(myMap)
+
+    // // Create the tile layer that will be the background of our map
+    // var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+    // attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+    // tileSize: 512,
+    // maxZoom: 18,
+    // zoomOffset: -1,
+    // id: "mapbox/light-v10",
+    // accessToken: API_KEY
+    // })
+    //lightmap.addTo(myMap);
 
     //create a GeoJSON layer containing the features array on the respones object
     L.geoJSON(earthquakes, {
@@ -55,7 +79,9 @@ function createMap(earthquakes) {
             });
         },
         onEachFeature: onEachFeature
-    }).addTo(myMap)
+    }).addTo(earthquakelayer)
+    earthquakelayer.addTo(myMap)
+
     //binding each layer
     function onEachFeature(feature,layer){
         var format = d3.timeFormat("%d-%b-%Y at %H:%M");
@@ -84,6 +110,14 @@ function createMap(earthquakes) {
        return div;
    };
 
+
+   d3.json(boundurl, function(response){
+       L.geoJSON(response,{
+           color:"purple",
+           weight: 5
+       }).addTo(tectoniclayer)
+       tectoniclayer.addTo(myMap)
+   });
    // Adding legend to the map
    legend.addTo(myMap);
 
