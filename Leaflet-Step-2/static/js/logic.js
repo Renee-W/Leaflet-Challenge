@@ -35,10 +35,10 @@ function createMap(earthquakes) {
     id: "mapbox/light-v10",
     accessToken: API_KEY
     })
-    
+
     // Creating map object
     var myMap = L.map("mapid", {
-        center: [37.7749, -122.4194],
+        center: [0, 0],
         zoom: 3,
         layers: [lightmap]
     });
