@@ -4,16 +4,16 @@ function markerSize(magnitude) {
 }
 
 // Define a color function that sets the colour of a marker based on earthquake magnitude
-function magColor(magnitude) {
-    if (magnitude <= 1) {
+function magColor(depth) {
+    if (depth <= 1) {
         return "green"
-    } else if (magnitude <= 2) {
+    } else if (depth <= 2) {
         return "yellowgreen"
-    } else if (magnitude <= 3) {
+    } else if (depth <= 3) {
         return "yellow"
-    } else if (magnitude <= 4) {
+    } else if (depth <= 4) {
         return "orange"
-    } else if (magnitude <= 5) {
+    } else if (depth <= 5) {
         return "red"
     } else {
         return "black"
@@ -32,25 +32,34 @@ function createMap(earthquakes) {
     tileSize: 512,
     maxZoom: 18,
     zoomOffset: -1,
-    id: "mapbox/light-v10",
+    id: "mapbox/outdoors-v11",
     accessToken: API_KEY
     })
-
+    var darkmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+        tileSize: 512,
+        maxZoom: 18,
+        zoomOffset: -1,
+        id: "mapbox/satellite-v9",
+        accessToken: API_KEY
+    })   
     // Creating map object
     var myMap = L.map("mapid", {
         center: [0, 0],
-        zoom: 3,
+        zoom: 2.5,
         layers: [lightmap]
     });
     var tectoniclayer = new L.LayerGroup()
     var earthquakelayer = new L.LayerGroup()
 
     var datalayer = {
-        'Tectonic Plates':tectoniclayer,
-        'Earthquakes':earthquakelayer
+        'Earthquakes':earthquakelayer,
+        'Tectonic Plates':tectoniclayer
+        
     }
     var allmaps = {
-        'light': lightmap
+        'outdoors': lightmap,
+        'satellite': darkmap
     }
     L.control.layers (allmaps, datalayer).addTo(myMap)
 
@@ -94,7 +103,7 @@ function createMap(earthquakes) {
        var div = L.DomUtil.create("div", "info legend");
        var magnitudes = [0, 1, 2, 3, 4, 5];
        var labels = [];
-       var legendInfo = "<h5>Magnitude</h5>";
+       var legendInfo = "<h5>Depth</h5>";
 
        div.innerHTML = legendInfo;
 

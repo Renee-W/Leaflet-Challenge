@@ -4,16 +4,16 @@ function markerSize(magnitude) {
 }
 
 // Define a color function that sets the colour of a marker based on earthquake magnitude
-function magColor(magnitude) {
-    if (magnitude <= 1) {
+function magColor(depth) {
+    if (depth <= 1) {
         return "green"
-    } else if (magnitude <= 2) {
+    } else if (depth <= 2) {
         return "yellowgreen"
-    } else if (magnitude <= 3) {
+    } else if (depth <= 3) {
         return "yellow"
-    } else if (magnitude <= 4) {
+    } else if (depth <= 4) {
         return "orange"
-    } else if (magnitude <= 5) {
+    } else if (depth <= 5) {
         return "red"
     } else {
         return "black"
